@@ -5,13 +5,14 @@ app = Flask(__name__)
 
 @app.route("/emotionDetector")
 def emotion_detector_route():
-    # Get the text from the request
     text_to_analyze = request.args.get('textToAnalyze')
     
-    # Call our emotion detector function
     result = emotion_detector(text_to_analyze)
     
-    # Format the output string as required
+    # Handle blank/invalid input
+    if result['dominant_emotion'] is None:
+        return "Invalid text! Please try again!"
+    
     output = (
         f"For the given statement, the system response is "
         f"'anger': {result['anger']}, "
@@ -26,7 +27,7 @@ def emotion_detector_route():
 
 @app.route("/")
 def render_index_page():
-    return render_template('index.html')  
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
